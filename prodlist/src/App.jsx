@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import './App.css';
 import Home from './Home';
+import Habits from './Habits';
 
 function App() {
   const [count, setCount] = useState(0)
@@ -8,6 +9,7 @@ function App() {
   return (
     <div>
      <Home/>
+     <Habits/>
     </div>
   )
 }
