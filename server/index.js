@@ -1,45 +1,25 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const TodoModel = require ('./Models/Todo')
+const TodoRoutes = require('./routes/TodoRoutes');
+const HabitRoutes = require('./routes/HabitRoutes');
+const DaylyRoutes = require('./routes/DaylyRoutes');
 
-const app = express ()
-app.use(cors())
-app.use(express.json())
-
-mongoose.connect('mongodb://127.0.0.1:27017/prodlist')
-
-app.get('/get', (req, res) => {
-    TodoModel.find()
-    .then(result => res.json(result))
-    .catch(err => res.json(err))
-})
-
-app.put('/update/:id', (req, res) => {
-    const { id } = req.params;
-    const { task } = req.body;
-    TodoModel.findByIdAndUpdate({_id: id }, { done: true })
-      .then(result => res.json(result))
-      .catch(err => res.json(err));
+const app = express();
+app.use(cors());
+app.use(express.json());
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    next();
 });
 
-app.delete('/delete/:id', (req, res) => {
-    const { id } = req.params;
-    const { task } = req.body;
-    TodoModel.findByIdAndDelete({_id: id })
-      .then(result => res.json(result))
-      .catch(err => res.json(err));
-});
+mongoose.connect('mongodb://127.0.0.1:27017/prodlist');
 
-app.post('/add', (req, res) => {
-const task = req.body.task;
-TodoModel.create ({
-    task: task
-}).then(result => res.json(result))
-.catch(err => res.json(err))
-
-})
+app.use(TodoRoutes);
+app.use(HabitRoutes);
+app.use(DaylyRoutes);
 
 app.listen(3001, () => {
-    console.log("server is Running")
-})
+  console.log("server is Running");
+});
