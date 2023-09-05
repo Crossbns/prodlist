@@ -1,16 +1,15 @@
 {
   "dependencies": {
     "nodemon": "^3.0.1",
-    "react-bootstrap-icons": "^1.10.3"
+    "react-bootstrap-icons": "^1.10.3",
+    "concurrently": "^6.5.1"
   },
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview",
-    "prod": "prodlist/vite  &&  nodemon server/index.js"
-  },
+    "start:both": "concurrently \"cd server && npm start\" \"cd prodlist && npm run dev\""
+},
+
   "devDependencies": {
+    "concurrently": "^8.2.1",
     "vite": "^4.4.9"
   }
 }
