@@ -5,7 +5,7 @@
     "concurrently": "^6.5.1"
   },
   "scripts": {
-    "start:both": "concurrently \"cd server && npm start\" \"cd prodlist && npm run dev\""
+    "start:both": "concurrently \"cd server && npm start\" \"cd front && npm run dev\""
 },
 
   "devDependencies": {
