@@ -1,15 +1,16 @@
 {
   "dependencies": {
+    "concurrently": "^6.5.1",
     "nodemon": "^3.0.1",
-    "react-bootstrap-icons": "^1.10.3",
-    "concurrently": "^6.5.1"
+    "react-bootstrap-icons": "^1.10.3"
   },
   "scripts": {
-    "start:both": "concurrently \"cd server && npm start\" \"cd front && npm run dev\""
-},
-
+    "start:both": "concurrently \"cd server && npm start\" \"cd front && npm run dev\"",
+    "build:both": "concurrently \"cd server && npm run build\" \"cd front && npm run build\""
+  },
   "devDependencies": {
     "concurrently": "^8.2.1",
+    "shx": "^0.3.4",
     "vite": "^4.4.9"
   }
 }
