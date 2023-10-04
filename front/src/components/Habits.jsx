@@ -2,19 +2,31 @@ import React, {useEffect, useState} from 'react'
 import axios from 'axios'
 import { BsCircleFill, BsFillCheckCircleFill, BsFillTrashFill } from 'react-icons/bs';
 
-function CreateHabit() {
+const API_URL = 'https://server-fqc9.onrender.com';
+
+function CreateHabit({ onAdd }) {
   const [habit, setHabit] = useState()
   const handleAdd = () => {
-    axios.post('http://localhost:3001/add-habit', {habit: habit})
-    .then(result => {
-      location.reload()
-    })
-    .catch(err => console.log(err))
+    if (habit && habit.trim().length > 0) { // Verifica si el hábito no está vacío
+      axios.post(`${API_URL}/add-habit`, {habit: habit})
+      .then(result => {
+        onAdd(result.data);
+      })
+      .catch(err => {
+        if (err.code === 'ECONNABORTED') {
+          console.log('Request has been exhausted');
+        } else {
+          console.log(err);
+        }
+      })
+    } else {
+      alert('Enter a valid habit.'); // Muestra un mensaje si el hábito está vacío
+    }
   }
   return (
     <div className="create_form">
-        <input type="text" placeholder='Ingresa un Hábito' onChange={(e) => setHabit(e.target.value)}/> 
-        <button type="button" onClick={handleAdd}>Agregar</button>
+        <input type="text" placeholder='Add an habit' onChange={(e) => setHabit(e.target.value)}/> 
+        <button type="button" onClick={handleAdd}>Add</button>
     </div>
   )
 }
@@ -23,36 +35,52 @@ function Habits() {
   const [habits, setHabits] = useState ([])
 
   useEffect(() => {
-    axios.get('http://localhost:3001/get-habits')
+    axios.get(`${API_URL}/get-habits`)
     .then(result => setHabits(result.data))
     .catch(err => console.log(err))
   }, [])
 
+  const handleAdd = (habit) => {
+    setHabits([...habits, habit]);
+  }
+
   const handleEdit = (id) => {
-    axios.put(`http://localhost:3001/update-habit/${id}`)
+    axios.put(`${API_URL}/update-habit/${id}`)
     .then(result => {
-      location.reload()
+      setHabits(habits.map(habit => habit._id === id ? {...habit, done: true} : habit));
     })
-    .catch(err => console.log(err))
+    .catch(err => {
+      if (err.code === 'ECONNABORTED') {
+        console.log('Request has been exhausted');
+      } else {
+        console.log(err);
+      }
+    })
   }
 
   const handleDelete = (id) => {
-    axios.delete(`http://localhost:3001/delete-habit/${id}`)
+    axios.delete(`${API_URL}/delete-habit/${id}`)
     .then(result => {
-      location.reload()
+      setHabits(habits.filter(habit => habit._id !== id));
     })
-    .catch(err => console.log(err))
+    .catch(err => {
+      if (err.code === 'ECONNABORTED') {
+        console.log('Request has been exhausted');
+      } else {
+        console.log(err);
+      }
+    })
   }
   
   return (
     <div className="home">
-      <h2>Hábitos</h2>
-      <CreateHabit />
+      <h2>Habits</h2>
+      <CreateHabit onAdd={handleAdd} />
       <div className="task-container">
       {
       habits.length === 0 
       ?
-      <div><h2>Sin registro</h2></div>
+      <div><h2>No Logs</h2></div>
       :
       habits.map(habit => (
         <div key={habit._id} className='task'>
